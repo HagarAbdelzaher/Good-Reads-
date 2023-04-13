@@ -11,11 +11,15 @@ const addBook = asyncFunction(async (req, res) => {
   if (!book) {
     throw { status: 404, message: 'Book not found!' };
   }
+
   const userBookInstance = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.body.bookId });
   let newEntry;
+  // if the user added this book in his shelves before , update shelf 
   if (userBookInstance) {
     newEntry = await UserBook.findOneAndUpdate({ userId: req.currentUserId, 'books.bookId': req.body.bookId }, { $set: { 'books.$.shelf': req.body.shelf } }, { returnOriginal: false });
-  } else {
+  } 
+  // if not , set shelf and update book model
+  else { 
     const newBook = { bookId: req.body.bookId, shelf: req.body.shelf };
     newEntry = await UserBook.findOneAndUpdate({ userId: req.currentUserId }, { $push: { books: newBook } }, { returnOriginal: false });
     await Book.findByIdAndUpdate(req.body.bookId, { $inc: { Interactions: 1 } }, { returnOriginal: false });
@@ -23,18 +27,24 @@ const addBook = asyncFunction(async (req, res) => {
   res.status(200).send(newEntry);
 });
 
+
+
 // get user books based on shelf
 const getUserBooks = asyncFunction(async (req, res) => {
   let userBooks;
   if (req.params.shelf === 'all') {
     userBooks = await UserBook.find({ userId: req.currentUserId })
       .populate('books.bookId').select({ books: 1, _id: 0 });
-  } else {
+  }//pick books from a specific shelf
+   else
+  {
     userBooks = await UserBook.find({ userId: req.currentUserId, 'books.shelf': req.params.shelf })
       .populate('books.bookId').select({ books: { $elemMatch: { shelf: req.params.shelf } }, _id: 0 });
   }
   res.status(200).send(userBooks);
 });
+
+
 // add rating
 const addRating = asyncFunction(async (req, res) => {
   const book = await Book.findById(req.body.bookId);
@@ -43,7 +53,7 @@ const addRating = asyncFunction(async (req, res) => {
   }
   const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.body.bookId });
   const bookModified = userBook.books.find((b) => b.bookId == req.body.bookId);
-  // if user didn't rate the bookk before
+  // if user didn't rate the book before
   if (!bookModified.rating) {
     await Book.findByIdAndUpdate(req.body.bookId, { $inc: { numberOfRatings: 1, sumOfRatings: req.body.rating } }, { returnOriginal: false });
   } else {
@@ -52,6 +62,8 @@ const addRating = asyncFunction(async (req, res) => {
   const newEntry = await UserBook.findOneAndUpdate({ userId: req.currentUserId, 'books.bookId': req.body.bookId }, { $set: { 'books.$.rating': req.body.rating } }, { returnOriginal: false });
   res.status(200).send(newEntry);
 });
+
+
 // update book shelf
 const updateShelf = asyncFunction(async (req, res) => {
   const userBook = await UserBook.findOneAndUpdate({ userId: req.currentUserId, 'books.bookId': req.body.bookId }, { $set: { 'books.$.shelf': req.body.shelf } }, { returnOriginal: false });
@@ -61,6 +73,9 @@ const updateShelf = asyncFunction(async (req, res) => {
   }
   res.status(200).send(userBook);
 });
+
+
+
 // add review
 const addReview = asyncFunction(async (req, res) => {
   const book = await Book.findById(req.body.bookId);
@@ -69,7 +84,7 @@ const addReview = asyncFunction(async (req, res) => {
   }
   const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.body.bookId });
   const bookModified = userBook.books.find((b) => b.bookId == req.body.bookId);
-  // if user didn't rate the bookk before
+  // if user reviewed the book before
   if (bookModified.review) {
     await Book.findByIdAndUpdate(req.body.bookId, { $pull: { reviews: { userId: req.currentUserId } } }, { returnOriginal: false });
   }
