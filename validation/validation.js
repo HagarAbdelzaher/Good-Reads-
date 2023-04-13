@@ -12,7 +12,7 @@ const validation = (schema) => async (req, res, next) => {
         }
     });
     if (errorValidation.length > 0) {
-        throw {status: 400, message: errorValidation[0].details[0].message};
+        throw {status: 422, message: errorValidation[0].details[0].message};
     } else {
         next();
     }
@@ -33,7 +33,7 @@ const authorValidator = {
             firstName: Joi.string().required().min(3),
             lastName: Joi.string().required().min(3),
             bio: Joi.string(),
-            DOB: Joi.date().required()
+            dob: Joi.date().required()
         })
     },
     updateAuthor: {
@@ -41,7 +41,7 @@ const authorValidator = {
             firstName: Joi.string().min(3),
             lastName: Joi.string().min(3),
             bio: Joi.string(),
-            DOB: Joi.date()
+            dob: Joi.date()
         }),
         params: Joi.object().required().keys({
             id: Joi.string().length(24).required(),
@@ -81,7 +81,7 @@ const usersValidator = {
     loginUser: {
         body: Joi.object().keys({
             email: Joi.string().email().required(),
-            password: Joi.string().required().regex(/[a-zA-Z0-9]{3,30}/),
+            password: Joi.string().required(),
         })
     },
     createUser: {
