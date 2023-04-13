@@ -1,7 +1,7 @@
 const Joi = require("joi");
+const asyncFunction = require('../middlewares/async');
 
-
-const validation = (schema) => async (req, res, next) => {
+const validation = (schema) => asyncFunction(async (req, res, next) => {
     const errorValidation = [];
     ['params', 'body'].forEach((key) => {
         if (schema[key]) {
@@ -16,7 +16,7 @@ const validation = (schema) => async (req, res, next) => {
     } else {
         next();
     }
-};
+});
 
 const adminValidator = {
     loginAdmin: {
