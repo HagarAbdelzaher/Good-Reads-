@@ -37,8 +37,13 @@ const getAllBooks = asyncFunction(async (req, res) => {
     // throw { status: 404, message: 'There are no books on this page' };
   }
   const skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
-  const books = await Book.find().skip(skip).limit(pageSize);
-  // const books = await Book.find().select({ _id: 0 });
+  const books = await Book.find()
+  .populate([
+    { path: 'authorId', select: ' _id firstName lastName' },
+    { path: 'categoryId', select: '_id name' }
+  ])
+  .skip(skip)
+  .limit(pageSize);
 
   res.status(200).send({ page, data: books, totalPages });
 });
