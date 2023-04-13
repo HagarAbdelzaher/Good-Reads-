@@ -1,6 +1,5 @@
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
-const asyncFunction = require('../middlewares/async');
 
 // to store user photo
 const storage = multer.diskStorage({
@@ -12,14 +11,13 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = asyncFunction(async ( req, file, cb)=>{
+function fileFilter(req, file, cb){
   if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
     cb(null, true);
   } else {
-    throw{status:415 , message:"ile type not supported"};
-    // cb(new Error('File type not supported'), false);
+    cb(new Error('File type not supported'), false);
   }
-});
+}
 
 // upload photo
 const upload = multer(
