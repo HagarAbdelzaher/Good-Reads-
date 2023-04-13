@@ -18,8 +18,16 @@ const validation = (schema) => async (req, res, next) => {
     }
 };
 
+const adminValidator = {
+    loginAdmin: {
+        body: Joi.object().keys({
+            email: Joi.string().email().required(),
+            password: Joi.string().required().min(8),
+        })
+    }
+}
 
-const AuthorValidator = {
+const authorValidator = {
     createAuthor: {
         body: Joi.object().keys({
             firstName: Joi.string().required().min(3),
@@ -46,7 +54,7 @@ const AuthorValidator = {
     }
 }
 
-const CategoryValidator = {
+const categoryValidator = {
     createCategory: {
         body: Joi.object().keys({
             Name: Joi.string().required().min(3),
@@ -69,11 +77,11 @@ const CategoryValidator = {
     }
 }
 
-const UsersValidator = {
+const usersValidator = {
     loginUser: {
         body: Joi.object().keys({
             email: Joi.string().email().required(),
-            password: Joi.string().required().min(8),
+            password: Joi.string().required().regex(/[a-zA-Z0-9]{3,30}/),
         })
     },
     createUser: {
@@ -99,7 +107,7 @@ const UsersValidator = {
     }
 }
 
-const BookValidator = {
+const bookValidator = {
     createBook: {
         body: Joi.object().keys({
             name: Joi.string().required().min(3),
@@ -158,5 +166,5 @@ const userBookValidator = {
 
 
 module.exports = {
-    validation, AuthorValidator, CategoryValidator, UsersValidator, BookValidator, userBookValidator
+    validation, adminValidator, authorValidator, categoryValidator, usersValidator, bookValidator, userBookValidator
 }
