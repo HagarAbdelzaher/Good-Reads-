@@ -3,7 +3,7 @@ const { Author } = require('../models/authors');
 const { Book } = require('../models/books');
 const asyncFunction = require('../middlewares/async');
 
-/// /////////////////////////////////////// get authors //////////////////////////////////
+///////////////////////////////////// get authors ////////////////////////////////////////
 
 const getAuthors = asyncFunction(async (req, res) => {
   const pageSize = 6;
@@ -19,7 +19,7 @@ const getAuthors = asyncFunction(async (req, res) => {
   res.status(200).send(authors);
 });
 
-/// //////////////////////////////// get author //////////////////////////////////////////
+//////////////////////////////////// get author //////////////////////////////////////////
 
 const getAuthorById = asyncFunction(async (req, res) => {
   const { authorId } = req.params;
@@ -30,7 +30,7 @@ const getAuthorById = asyncFunction(async (req, res) => {
   res.status(200).send(oneAuthor);
 });
 
-/// //////////////////////////////// create author ///////////////////////////////////////
+//////////////////////////////////// create author ///////////////////////////////////////
 
 const createNewAuthor = asyncFunction(async (req, res) => {
   const author = new Author({
@@ -43,7 +43,7 @@ const createNewAuthor = asyncFunction(async (req, res) => {
   author.save().then(() => { res.status(200).send(author); });
 });
 
-/// //////////////////////////////// delete author ///////////////////////////////////////
+//////////////////////////////////// delete author ///////////////////////////////////////
 
 const deleteAuthorById = asyncFunction(async (req, res) => {
   const author = await Author.findByIdAndDelete({ _id: req.params.authorId });
@@ -56,7 +56,7 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
   // and his books
 });
 
-/// //////////////////////////////// update author ///////////////////////////////////////
+//////////////////////////////////// update author ///////////////////////////////////////
 
 const updateAuthorById = asyncFunction(async (req, res) => {
   let photo;
@@ -78,7 +78,7 @@ const updateAuthorById = asyncFunction(async (req, res) => {
   res.status(200).send(author);
 });
 
-/// //////////////////////////////// update photo ////////////////////////////////////////
+//////////////////////////////////// update photo ////////////////////////////////////////
 
 const updateAuthorPhotoById = asyncFunction(async (req, res) => {
   const { authorId } = req.params;
@@ -91,14 +91,13 @@ const updateAuthorPhotoById = asyncFunction(async (req, res) => {
   res.status(200).send(author);
 });
 
-/// ////////////////////////////// get popular list ///////////////////////////////////////////
+////////////////////////////////// get popular list ///////////////////////////////////////////
 
 const getPopularListOfAuthors = asyncFunction(async (req, res) => {
   // {categoryId:"643187aa6321613814c9e713"}
   const highRatingsOfBooks = await Book.find().populate({
     path: 'authorId',
-  }).limit(3);
-  //  console.log(highRatingsOfBooks);
+  }).sort({ popularity: -1 }).limit(3);
   if (!highRatingsOfBooks || highRatingsOfBooks.length === 0) {
     throw { status: 404, message: 'No books exist' };
   }
@@ -109,7 +108,7 @@ const getPopularListOfAuthors = asyncFunction(async (req, res) => {
   res.status(200).send(popularAuthor);
 });
 
-/// ////////////////////////////// get Books by Author ///////////////////////////////////////////
+////////////////////////////////// get Books by Author ///////////////////////////////////////////
 
 const getBooksByAuthor = asyncFunction(async (req, res) => {
   const author = await Author.findById(req.params.authorId);
