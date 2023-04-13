@@ -5,16 +5,23 @@ const { v4: uuidv4 } = require('uuid');
 const storage = multer.diskStorage({
   destination: 'public/photos/',
   filename(req, file, cb) {
-    // if(req.file && req.file.filename){
-    // console.log(req.file);
     fileUUID = uuidv4();
     cb(null, `${file.originalname}-${fileUUID}`);
     // }
   },
 });
-  // upload photo
+
+function fileFilter(req, file, cb){
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(new Error('File type not supported'), false);
+  }
+}
+
+// upload photo
 const upload = multer(
-  { storage: storage }, { limits: { fileSize: 5000000 } }).single('image'); // limit file size to 5 MB)
+  { storage: storage, fileFilter }, { limits: { fileSize: 5000000 } }).single('image'); // limit file size to 5 MB)
 
 const fileParser = (req, res, next) => {
   upload(req, res, (err) => {
