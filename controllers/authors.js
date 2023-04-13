@@ -36,7 +36,7 @@ const createNewAuthor = asyncFunction(async (req, res) => {
   const author = new Author({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    dob: req.body.dateOfBirth,
+    dob: req.body.dob,
     photo: req.file && req.file.filename,
     bio: req.body.bio,
   });
