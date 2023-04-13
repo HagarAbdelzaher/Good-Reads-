@@ -26,5 +26,8 @@
     "eslint": "^8.37.0",
     "eslint-config-airbnb": "^19.0.4",
     "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": "18.5.0"
   }
 }
