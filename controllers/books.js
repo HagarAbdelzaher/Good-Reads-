@@ -112,7 +112,10 @@ const updateBook = asyncFunction(async (req, res) => {
 /// //////////////////////////////////////// get Popular Books //////////////////////////////////
 
 const getPopularListOfBooks = asyncFunction(async (req, res) => {
-  const books = await Book.find().sort({ popularity: -1 }).limit(6);
+  const books = await Book.find().populate([
+    { path: 'authorId', select: ' _id firstName lastName' },
+    { path: 'categoryId', select: '_id name' }
+  ]).sort({ popularity: -1 }).limit(6);
   if (!books) {
     throw { status: 404, message: 'No books found!' };
   }
