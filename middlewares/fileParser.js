@@ -11,11 +11,13 @@ const storage = multer.diskStorage({
   },
 });
 
-function fileFilter(req, file, cb){
+function fileFilter (req, file, cb){
   if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
-    cb(null, true);
+    // console.log("true")
+    return cb(null, true);
   } else {
-    cb(new Error('File type not supported'), false);
+    // console.log("fileFilter")
+    return cb({ status: 422, message: "file not supported"});
   }
 }
 
@@ -26,8 +28,7 @@ const upload = multer(
 const fileParser = (req, res, next) => {
   upload(req, res, (err) => {
     if (err) {
-      console.log(err);
-      throw {status: 400, message: 'Error uploading file' };
+      return next({status: err.status || 422, message: err.message || "Error Upload File" }); // must send error to next()
     }
     next();
   });
