@@ -33,6 +33,9 @@ const getAuthorById = asyncFunction(async (req, res) => {
 //////////////////////////////////// create author ///////////////////////////////////////
 
 const createNewAuthor = asyncFunction(async (req, res) => {
+  if(req.body.dob){
+    req.body.dob = Date.parse(req.body.dob)
+  }
   const author = new Author({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -62,6 +65,9 @@ const updateAuthorById = asyncFunction(async (req, res) => {
   let photo;
   if (req.file) {
     photo = req.file.filename;
+  }
+  if(req.body.dob){
+    req.body.dob = Date.parse(req.body.dob)
   }
   const {
     firstName, lastName, dob, bio,
