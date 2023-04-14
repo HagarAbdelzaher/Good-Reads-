@@ -44,6 +44,15 @@ const getUserBooks = asyncFunction(async (req, res) => {
   res.status(200).send(userBooks);
 });
 
+const getUserBookById = asyncFunction(async (req, res) => {
+  const book = await Book.findById(req.params.bookId);
+  if (!book) {
+    throw { status: 404, message: 'Book not found!' };
+  }
+  const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.params.bookId });
+  res.status(200).send(userBook);
+});
+
 
 // add rating
 const addRating = asyncFunction(async (req, res) => {
@@ -100,4 +109,5 @@ module.exports = {
   addRating,
   updateShelf,
   addReview,
+  getUserBookById,
 };
