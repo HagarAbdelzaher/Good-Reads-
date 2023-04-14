@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', authorsController.getPopularListOfAuthors); // Not tested
 router.get('/getAuthors', authorsController.getAuthors);
-router.get('/books/:authorId', validation(authorValidator.idParams), authorsController.getBooksByAuthor); // Not tested
-router.get('/:authorId', validation(authorValidator.idParams), authorsController.getAuthorById);
+router.get('/books/:authorId',  authorsController.getBooksByAuthor); 
+router.get('/:authorId', authorsController.getAuthorById);
 
 module.exports = router;
