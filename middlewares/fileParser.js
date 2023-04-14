@@ -1,5 +1,19 @@
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const { cloudinary } = require("../config/cloudPhoto");
+const fs = require('fs');
+
+
+
+const createUrlPhoto = async(photoUrl) => {
+  let image = await cloudinary.uploader.upload(photoUrl, {
+    resource_type: "image" 
+  }).then((result)=>{
+      fs.unlinkSync(photoUrl);
+      return result.url;
+    }).catch(err =>  console.log(err));
+    return image
+};
 
 // to store user photo
 const storage = multer.diskStorage({
@@ -38,4 +52,5 @@ const fileParser = (req, res, next) => {
 
 module.exports = {
   fileParser,
+  createUrlPhoto
 };

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { User } = require('../models/users');
 const asyncFunction = require('../middlewares/async');
 const { UserBook } = require('../models/usersBooks');
+const { createUrlPhoto } = require('../middlewares/fileParser');
 
 const { JWT_SECRET = 'test' } = process.env;
 
@@ -21,15 +22,19 @@ const createUser = asyncFunction(async (req, res) => {
   if (user) {
     throw { status: 400, message: 'User already registered' };
   }
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
-    photo: req.file && req.file.filename,
+    photo: photo,
   });
   addUserToUserBooks(user._id);
-  user.save().then(() => { res.status(200).send(user); });
+  user.save().then(() => { res.status(200).send(user); }).catch((err)=>{
+    res.status(400).send(err);
+  });
 });
 
 /// /////////////////////////////// login user ///////////////////////////////////////////
@@ -71,12 +76,12 @@ const getUsers = asyncFunction(async (req, res) => {
 /// /////////////////////////////////// delete user /////////////////////////////////////////
 
 const deleteUserById = asyncFunction(async (req, res) => {
-  const { userId } = req.body;
-  const deleteUser = await User.findOneAndDelete({ id: userId });
+  const { id } = req.params;
+  const deleteUser = await User.findOneAndDelete({ _id: userId });
   if (!deleteUser || deleteUser === undefined) {
     throw { status: 401, message: 'User not found' };
   }
-  res.status(200).send(`Deleted User: ${deleteUser}`);
+  res.status(200).send(`Deleted User: ${deleteUser.filename}`);
 });
 
 /// ///////////////////////////////// update user ///////////////////////////////////////

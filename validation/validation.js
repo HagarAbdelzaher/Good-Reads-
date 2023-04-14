@@ -3,7 +3,7 @@ const asyncFunction = require('../middlewares/async');
 
 const validation = (schema) => asyncFunction(async (req, res, next) => {
     const errorValidation = [];
-    ['params', 'body'].forEach((key) => {
+    ['params', 'query','body'].forEach((key) => {
         if (schema[key]) {
             const validation = schema[key].validate(req[key]);
             if (validation.error) {

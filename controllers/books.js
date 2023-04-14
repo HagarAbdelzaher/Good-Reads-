@@ -7,11 +7,13 @@ const { Category } = require('../models/categories');
 /// //////////////////////////////////////// add Books //////////////////////////////////
 
 const addNewBook = asyncFunction(async (req, res) => {
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   const book = new Book({
     name: req.body.name,
     categoryId: req.body.categoryId,
     authorId: req.body.authorId,
-    cover: req.file && req.file.filename,
+    cover: photo,
     description: req.body.description,
   });
   // eslint-disable-next-line max-len
@@ -24,7 +26,7 @@ const addNewBook = asyncFunction(async (req, res) => {
 const searchBooks = asyncFunction(async (req,res)=>{
   const books = await Book.find({name: { $regex: new RegExp(req.params.query , 'i') } });
   res.status(200).send(books);
-  });
+});
 /// //////////////////////////////////////// get all Books //////////////////////////////////
 
 const getAllBooks = asyncFunction(async (req, res) => {

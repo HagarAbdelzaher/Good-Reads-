@@ -36,11 +36,13 @@ const createNewAuthor = asyncFunction(async (req, res) => {
   if(req.body.dob){
     req.body.dob = Date.parse(req.body.dob)
   }
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   const author = new Author({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     dob: req.body.dob,
-    photo: req.file && req.file.filename,
+    photo: photo,
     bio: req.body.bio,
   });
   author.save().then(() => { res.status(200).send(author); });
@@ -62,10 +64,8 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
 //////////////////////////////////// update author ///////////////////////////////////////
 
 const updateAuthorById = asyncFunction(async (req, res) => {
-  let photo;
-  if (req.file) {
-    photo = req.file.filename;
-  }
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   if(req.body.dob){
     req.body.dob = Date.parse(req.body.dob)
   }
@@ -100,7 +100,6 @@ const updateAuthorPhotoById = asyncFunction(async (req, res) => {
 ////////////////////////////////// get popular list ///////////////////////////////////////////
 
 const getPopularListOfAuthors = asyncFunction(async (req, res) => {
-  // {categoryId:"643187aa6321613814c9e713"}
   const highRatingsOfBooks = await Book.find().populate({
     path: 'authorId',
   }).sort({ popularity: -1 }).limit(3);
