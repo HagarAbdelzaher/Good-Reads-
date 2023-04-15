@@ -110,17 +110,29 @@ const updateAuthorPhotoById = asyncFunction(async (req, res) => {
 
 ////////////////////////////////// get popular list ///////////////////////////////////////////
 
+
 const getPopularListOfAuthors = asyncFunction(async (req, res) => {
+  // sort books based on popularity 
   const highRatingsOfBooks = await Book.find().populate({
     path: 'authorId',
-  }).sort({ popularity: -1 }).limit(3);
+  }).sort({ popularity: -1 });
+
   if (!highRatingsOfBooks || highRatingsOfBooks.length === 0) {
     throw { status: 404, message: 'No books exist' };
   }
-  const popularAuthor = highRatingsOfBooks.map((book) => book.authorId); // story.author._id;
-  if (!popularAuthor || popularAuthor.length === 0) {
+
+  const popularAuthorSet = new Set();
+  for (let i = 0; i < highRatingsOfBooks.length && popularAuthorSet.size < 3; i++) {
+    // Add the author's name to the set
+    popularAuthorSet.add(highRatingsOfBooks[i].authorId);
+  }
+
+  const popularAuthor = [...popularAuthorSet]; // Convert the set to an array
+
+  if (popularAuthor.length === 0) {
     throw { status: 404, message: 'No authors exist' };
   }
+
   res.status(200).send(popularAuthor);
 });
 
