@@ -77,7 +77,7 @@ const getUsers = asyncFunction(async (req, res) => {
 
 const deleteUserById = asyncFunction(async (req, res) => {
   const { id } = req.params;
-  const deleteUser = await User.findOneAndDelete({ _id: userId });
+  const deleteUser = await User.findOneAndDelete({ _id: id });
   if (!deleteUser || deleteUser === undefined) {
     throw { status: 401, message: 'User not found' };
   }
@@ -88,11 +88,8 @@ const deleteUserById = asyncFunction(async (req, res) => {
 
 const updateUserById = asyncFunction(async (req, res) => {
   const { id } = req.params;
-  let photo;
-  if (req.file) {
-    photo = req.file.filename;
-  }
-
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   const {
     firstName, lastName, password, email,
   } = req.body;

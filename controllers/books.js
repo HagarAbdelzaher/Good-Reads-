@@ -100,9 +100,8 @@ const deleteBook = asyncFunction(async (req, res) => {
 
 const updateBook = asyncFunction(async (req, res) => {
   // eslint-disable-next-line max-len
-  if (req.file) {
-    req.body.cover = req.file.filename;
-  }
+  if (!req.file) throw{status: 400, message: "no image uploaded"};
+  req.body.cover = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   const book = await Book.findByIdAndUpdate(req.params.id, req.body, { returnOriginal: false });
   if (!book) {
     throw { status: 404, message: 'Book not found!' };
