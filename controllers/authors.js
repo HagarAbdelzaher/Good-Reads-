@@ -76,20 +76,13 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
 //////////////////////////////////// update author ///////////////////////////////////////
 
 const updateAuthorById = asyncFunction(async (req, res) => {
-  if(!req.file) throw{status: 400, message: "no image uploaded"};
-  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
+  if(req.file){
+   req.body.photo= await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
+  } 
   if(req.body.dob){
     req.body.dob = Date.parse(req.body.dob)
   }
-  const {
-    firstName, lastName, dob, bio,
-  } = req.body;
-  // eslint-disable-next-line max-len
-  const author = await Author.findByIdAndUpdate({ _id: req.params.authorId }, {
-    $set: {
-      firstName, lastName, bio, dob, photo,
-    },
-  }, { new: true });
+  const author = await Author.findByIdAndUpdate({ _id: req.params.authorId },req.body, { returnOriginal: false});
   if (!author) {
     throw { status: 404, message: 'Author not found!' };
   }
