@@ -14,8 +14,7 @@ const authorSchema = new Schema(
     },
     photo: {
       type: String,
-      required: false,
-      default: '/public/defaultPhoto/defaultImage2.jpeg',
+      required: true,
     },
     dob: {
       type: Date,

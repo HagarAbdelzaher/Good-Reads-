@@ -14,16 +14,11 @@ const bookSchema = new mongoose.Schema(
     authorId: {
       type: mongoose.Types.ObjectId,
       ref: 'Author',
-    //  required: true,
+      required:true
     },
-    // averageRating: {
-    //   type: Number,
-    //   default: 0,
-    // },
     cover: {
       type: String,
-      required: false,
-    // default: '../public/defaultPhoto/defaultImage2.jpeg',
+      required: true,
     },
     numberOfRatings: {
       type: Number,
@@ -57,6 +52,7 @@ const bookSchema = new mongoose.Schema(
     ],
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },

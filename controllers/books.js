@@ -50,8 +50,7 @@ const getAllBooks = asyncFunction(async (req, res) => {
     { path: 'authorId', select: ' _id firstName lastName' },
     { path: 'categoryId', select: '_id name' }
   ])
-  .skip(skip)
-  .limit(pageSize);
+  .skip(skip).sort({ createdAt: -1 }).limit(pageSize);
   res.status(200).send({ page: page, data: books, totalPages: totalPages, totalBooks: totalBooks });
   }else{
     const allBooks = await Book.find()

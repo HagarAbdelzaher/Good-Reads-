@@ -57,12 +57,12 @@ const authorValidator = {
 const categoryValidator = {
     createCategory: {
         body: Joi.object().keys({
-            Name: Joi.string().required().min(3),
+            name: Joi.string().required().min(3),
         })
     },
     updateCategory: {
         body: Joi.object().keys({
-            Name: Joi.string().min(3),
+            name: Joi.string().required().min(3),
 
         }),
         params: Joi.object().required().keys({
@@ -119,9 +119,9 @@ const bookValidator = {
     },
     updateBook: {
         body: Joi.object().keys({
-            name: Joi.string().required().min(3),
-            categoryId: Joi.string().required().length(24),
-            authorId: Joi.string().required().length(24),
+            name: Joi.string().min(3),
+            categoryId: Joi.string().length(24),
+            authorId: Joi.string().length(24),
             description: Joi.string(),
         })
     },
@@ -129,14 +129,14 @@ const bookValidator = {
         params: Joi.object().required().keys({
             id: Joi.string().length(24).required()
         }),
-    }
+    },
 }
 
 const userBookValidator = {
     addShelf: {
         body: Joi.object().keys({
             bookId: Joi.string().required().length(24),
-            shelf: Joi.string().required().valid('Want to read', 'Read', 'Reading')
+            shelf: Joi.string().valid('Want to read', 'Read', 'Reading')
         })
     },
     updateShelf: {
@@ -148,7 +148,7 @@ const userBookValidator = {
     addRating:{
         body: Joi.object().keys({
             bookId: Joi.string().required().length(24),
-            rating: Joi.number().required()
+            rating: Joi.number().min(0).max(5).required()
         })
     },
     addReview:{
@@ -159,8 +159,16 @@ const userBookValidator = {
     },
     idParams: {
         params: Joi.object().required().keys({
-            id: Joi.string().length(24).required(),
+            bookId: Joi.string().length(24).required(),
         }),
+    },
+    shelfParams:{
+        params: Joi.object().required().keys({
+        shelf:  Joi.string().required().valid('Want to read', 'Read', 'Reading' , 'all'),
+        }),
+
+        
+       
     }
 }
 
