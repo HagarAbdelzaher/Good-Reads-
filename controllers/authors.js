@@ -110,7 +110,6 @@ const updateAuthorPhotoById = asyncFunction(async (req, res) => {
 
 ////////////////////////////////// get popular list ///////////////////////////////////////////
 
-
 const getPopularListOfAuthors = asyncFunction(async (req, res) => {
   // sort books based on popularity 
   const highRatingsOfBooks = await Book.find().populate({

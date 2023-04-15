@@ -1,6 +1,5 @@
 /* eslint-disable no-throw-literal */
 const asyncFunction = require('../middlewares/async');
-
 const { Book } = require('../models/books');
 const { Category } = require('../models/categories');
 
@@ -23,14 +22,19 @@ const addNewBook = asyncFunction(async (req, res) => {
     res.status(200).send(book);
   });
 });
+
+/// //////////////////////////////////////// get search Books //////////////////////////////////
+
 const searchBooks = asyncFunction(async (req,res)=>{
   const books = await Book.find({name: { $regex: new RegExp(req.params.query , 'i') } });
   res.status(200).send(books);
 });
+
 /// //////////////////////////////////////// get all Books //////////////////////////////////
 
 const getAllBooks = asyncFunction(async (req, res) => {
-  const pageSize = 8;
+  if(!req.query.skipPagination){
+  const pageSize = 10;
   let page = req.query.page || 1;
   const totalBooks = await Book.countDocuments();
   const totalPages = Math.ceil(totalBooks / pageSize);
@@ -46,8 +50,11 @@ const getAllBooks = asyncFunction(async (req, res) => {
   ])
   .skip(skip)
   .limit(pageSize);
-
-  res.status(200).send({ page, data: books, totalPages });
+  res.status(200).send({ page: page, data: books, totalPages: totalPages, totalBooks: totalBooks });
+  }else{
+    const allBooks = await Book.find()
+    res.status(200).send({books: allBooks});
+  }
 });
 
 /// //////////////////////////////////////// get Book by id //////////////////////////////////
