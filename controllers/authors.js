@@ -2,6 +2,8 @@
 const { Author } = require('../models/authors');
 const { Book } = require('../models/books');
 const asyncFunction = require('../middlewares/async');
+const { createUrlPhoto } = require('../middlewares/fileParser');
+
 
 ///////////////////////////////////// get authors ////////////////////////////////////////
 

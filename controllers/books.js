@@ -2,6 +2,8 @@
 const asyncFunction = require('../middlewares/async');
 const { Book } = require('../models/books');
 const { Category } = require('../models/categories');
+const { createUrlPhoto } = require('../middlewares/fileParser');
+
 
 /// //////////////////////////////////////// add Books //////////////////////////////////
 
