@@ -13,9 +13,19 @@ const addNewCategory = asyncFunction(async (req, res) => {
   });
 });
 const getAllCategories = asyncFunction(async (req, res) => {
-  const categories = await Category.find();
-  // const categories = await Category.find().select({ _id: 0 });
-  res.status(200).send(categories);
+  const pageSize = 10;
+  let page = req.query.page || 1;
+  let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
+  const totalBooks = await Category.countDocuments();
+  const totalPages = Math.ceil(totalBooks / pageSize);
+  if (page > totalPages) {
+    // page = 1;
+    throw { status: 404, message: 'There are no books on this page' };
+  }
+  const categories = await Category.find().skip(skip).limit(pageSize);
+  res.status(200).send({categories , page , totalPages , totalBooks});
+  // const categories = await Category.find();
+  // res.status(200).send(categories);
 });
 const getCategoryById = asyncFunction(async (req, res) => {
   const category = await Category.findById(req.params.id);
