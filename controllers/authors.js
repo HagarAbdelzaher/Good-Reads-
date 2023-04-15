@@ -6,21 +6,21 @@ const asyncFunction = require('../middlewares/async');
 ///////////////////////////////////// get authors ////////////////////////////////////////
 
 const getAuthors = asyncFunction(async (req, res) => {
-  if(req.query.limit === false){
+  if(!req.query.skipPagination){
   const pageSize = 10;
   let page = req.query.page || 1;
   let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
-  const totalBooks = await Author.countDocuments();
+  const totalAuthors = await Author.countDocuments();
   const totalPages = Math.ceil(totalBooks / pageSize);
   if (page > totalPages) {
     // page = 1;
     throw { status: 404, message: 'There are no books on this page' };
   }
   const authors = await Author.find().skip(skip).limit(pageSize);
-  res.status(200).send({authors , page , totalPages , totalBooks});
+  res.status(200).send({authors: authors , page: page , totalPages: totalPages , totalAuthors: totalAuthors});
   }else{
-    const authors = await Author.find();
-    res.status(200).send({authors});
+    const allAuthors = await Author.find();
+    res.status(200).send(allAuthors);
   } 
 });
 

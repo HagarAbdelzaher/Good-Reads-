@@ -15,7 +15,7 @@ const addNewCategory = asyncFunction(async (req, res) => {
 });
 
 const getAllCategories = asyncFunction(async (req, res) => {
-  if(req.query.limit === false){
+  if(!req.query.skipPagination){
   const pageSize = 10;
   let page = req.query.page || 1;
   let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
@@ -26,10 +26,10 @@ const getAllCategories = asyncFunction(async (req, res) => {
     throw { status: 404, message: 'There are no books on this page' };
   }
   const categories = await Category.find().skip(skip).limit(pageSize);
-  res.status(200).send({categories , page , totalPages , totalBooks});
+  res.status(200).send({ page: page, categories: categories, totalPages: totalPages , totalBooks: totalBooks});
   }else{
-    const categories = await Category.find();
-    res.status(200).send({categories});
+    const allCategories = await Category.find();
+    res.status(200).send(allCategories);
   }
 });
 
@@ -70,6 +70,8 @@ const getPopularListOfCategories = asyncFunction(async (req, res) => {
   }
   res.status(200).send(category);
 });
+
+
 module.exports = {
   addNewCategory,
   getAllCategories,
