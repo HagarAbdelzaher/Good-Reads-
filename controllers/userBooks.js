@@ -60,7 +60,13 @@ const getUserBookById = asyncFunction(async (req, res) => {
   if (!book) {
     throw { status: 404, message: 'Book not found!' };
   }
-  const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.params.bookId });
+  const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.params.bookId }).populate({
+    path: 'books.bookId',
+    populate: [
+      { path: 'authorId', select: '_id firstName lastName' },
+      { path: 'categoryId', select: '_id name' }
+    ]
+  });
   res.status(200).send(userBook);
 });
 
