@@ -32,10 +32,11 @@ const createUser = asyncFunction(async (req, res) => {
     photo: photo,
   });
   addUserToUserBooks(user._id);
-  user.save().then(() => { res.status(200).send(user); }).catch((err)=>{
-    res.status(400).send(err);
+  user.save().then(() => { res.status(200).send(user); })
   });
-});
+//   .catch((err)=>{
+//     res.status(400).send(err.message);
+// });
 
 /// /////////////////////////////// login user ///////////////////////////////////////////
 
