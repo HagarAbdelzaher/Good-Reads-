@@ -25,7 +25,7 @@ const getAllCategories = asyncFunction(async (req, res) => {
     // page = 1;
     throw { status: 404, message: 'There are no books on this page' };
   }
-  const categories = await Category.find().skip(skip).limit(pageSize);
+  const categories = await Category.find().skip(skip).sort({ createdAt: -1 }).limit(pageSize);
   res.status(200).send({ page: page, categories: categories, totalPages: totalPages , totalBooks: totalBooks});
   }else{
     const allCategories = await Category.find();
