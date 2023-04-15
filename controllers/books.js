@@ -53,7 +53,10 @@ const getAllBooks = asyncFunction(async (req, res) => {
 /// //////////////////////////////////////// get Book by id //////////////////////////////////
 
 const getBookById = asyncFunction(async (req, res) => {
-  const book = await Book.findById(req.params.id);
+  const book = await Book.findById(req.params.id).populate([
+    { path: 'authorId', select: ' _id firstName lastName' },
+    { path: 'categoryId', select: '_id name' }
+  ]);
   if (!book) {
     throw { status: 404, message: 'Book not found!' };
   }

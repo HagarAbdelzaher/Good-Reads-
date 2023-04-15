@@ -33,13 +33,24 @@ const addBook = asyncFunction(async (req, res) => {
 const getUserBooks = asyncFunction(async (req, res) => {
   let userBooks;
   if (req.params.shelf === 'all') {
-    userBooks = await UserBook.find({ userId: req.currentUserId })
-      .populate('books.bookId').select({ books: 1, _id: 0 });
+    userBooks = await UserBook.find({ userId: req.currentUserId }).populate({
+      path: 'books.bookId',
+      populate: [
+        { path: 'authorId', select: '_id firstName lastName' },
+        { path: 'categoryId', select: '_id name' }
+      ]
+    });
   }//pick books from a specific shelf
    else
   {
     userBooks = await UserBook.find({ userId: req.currentUserId, 'books.shelf': req.params.shelf })
-      .populate('books.bookId').select({ books: { $elemMatch: { shelf: req.params.shelf } }, _id: 0 });
+    .populate({
+      path: 'books.bookId',
+      populate: [
+        { path: 'authorId', select: '_id firstName lastName' },
+        { path: 'categoryId', select: '_id name' }
+      ]
+    }).select({ books: { $elemMatch: { shelf: req.params.shelf } }, _id: 0 });
   }
   res.status(200).send(userBooks);
 });
@@ -49,7 +60,13 @@ const getUserBookById = asyncFunction(async (req, res) => {
   if (!book) {
     throw { status: 404, message: 'Book not found!' };
   }
-  const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.params.bookId });
+  const userBook = await UserBook.findOne({ userId: req.currentUserId, 'books.bookId': req.params.bookId }).populate({
+    path: 'books.bookId',
+    populate: [
+      { path: 'authorId', select: '_id firstName lastName' },
+      { path: 'categoryId', select: '_id name' }
+    ]
+  });
   res.status(200).send(userBook);
 });
 
