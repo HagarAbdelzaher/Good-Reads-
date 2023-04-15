@@ -88,9 +88,10 @@ const updateAuthorById = asyncFunction(async (req, res) => {
 
 const updateAuthorPhotoById = asyncFunction(async (req, res) => {
   const { authorId } = req.params;
-  const { filename } = req.file;
+  if(!req.file) throw{status: 400, message: "no image uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   // eslint-disable-next-line max-len
-  const author = await Author.findByIdAndUpdate({ _id: authorId }, { $set: { photo: filename } }, { new: true });
+  const author = await Author.findByIdAndUpdate({ _id: authorId }, { $set: { photo: photo } }, { new: true });
   if (!author) {
     throw { status: 404, message: 'Author not found!' };
   }
