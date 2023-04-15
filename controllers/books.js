@@ -67,7 +67,7 @@ const getBooksByCategory = asyncFunction(async (req, res) => {
   if (!category) {
     throw { status: 404, message: 'category not found!' };
   }
-  const pageSize = 8;
+  const pageSize = 10;
   let page = req.query.page || 1;
   const totalBooks = await Book.find({ categoryId: req.params.categoryId }).countDocuments();
   const totalPages = Math.ceil(totalBooks / pageSize);
@@ -80,7 +80,7 @@ const getBooksByCategory = asyncFunction(async (req, res) => {
   if (!books) {
     throw { status: 404, message: 'There are no books on this category' };
   }
-  res.status(200).send({ page, data: books, totalPages });
+  res.status(200).send({ page, data: books, totalPages , totalBooks});
 });
 
 /// //////////////////////////////////////// delete Books //////////////////////////////////
