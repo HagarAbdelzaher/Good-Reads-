@@ -44,12 +44,12 @@ const authorValidator = {
             dob: Joi.date()
         }),
         params: Joi.object().required().keys({
-            id: Joi.string().length(24).required(),
+            authorId: Joi.string().length(24).required(),
         })
     },
     idParams: {
         params: Joi.object().required().keys({
-            id: Joi.string().length(24).required(),
+            authorId: Joi.string().length(24).required(),
         })
     }
 }
