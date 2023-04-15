@@ -18,7 +18,7 @@ const getAuthors = asyncFunction(async (req, res) => {
     // page = 1;
     throw { status: 404, message: 'There are no books on this page' };
   }
-  const authors = await Author.find().skip(skip).limit(pageSize);
+  const authors = await Author.find().skip(skip).sort({ createdAt: -1 }).limit(pageSize);
   res.status(200).send({ page: page, authors: authors, totalPages: totalPages , totalAuthors: totalAuthors});
   }else{
     const allAuthors = await Author.find();
@@ -63,7 +63,7 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
     throw { status: 404, message: 'Author not found!' };
   }
   const authorBooks = await Book.find({ authorId: req.params.authorId })
-  console.log(authorBooks);
+
   if(authorBooks.length!==0)
   {
     throw{status:409 , message :"You cannot delete an author without deleting his books first!"}
@@ -83,20 +83,6 @@ const updateAuthorById = asyncFunction(async (req, res) => {
     req.body.dob = Date.parse(req.body.dob)
   }
   const author = await Author.findByIdAndUpdate({ _id: req.params.authorId },req.body, { returnOriginal: false});
-  if (!author) {
-    throw { status: 404, message: 'Author not found!' };
-  }
-  res.status(200).send(author);
-});
-
-//////////////////////////////////// update photo ////////////////////////////////////////
-
-const updateAuthorPhotoById = asyncFunction(async (req, res) => {
-  const { authorId } = req.params;
-  if(!req.file) throw{status: 400, message: "no image uploaded"};
-  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
-  // eslint-disable-next-line max-len
-  const author = await Author.findByIdAndUpdate({ _id: authorId }, { $set: { photo: photo } }, { new: true });
   if (!author) {
     throw { status: 404, message: 'Author not found!' };
   }
@@ -160,7 +146,6 @@ module.exports = {
   getAuthorById,
   deleteAuthorById,
   updateAuthorById,
-  updateAuthorPhotoById,
   getPopularListOfAuthors,
   getBooksByAuthor,
 };
