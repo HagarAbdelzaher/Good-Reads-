@@ -1,14 +1,16 @@
 const express = require('express');
 const { authorsController } = require('../../controllers/index');
+const { validation, authorValidator } = require('../../validation/validation')
+
 
 const router = express.Router();
 
-router.post('/', authorsController.createNewAuthor);
+router.post('/', validation(authorValidator.createAuthor), authorsController.createNewAuthor);
 router.get('/', authorsController.getAuthors);
-router.get('/:authorId', authorsController.getAuthorById);
-router.patch('/:authorId', authorsController.updateAuthorById);
-router.delete('/:authorId', authorsController.deleteAuthorById);
-router.get('/books/:authorId', authorsController.getBooksByAuthor);
+router.get('/:authorId',validation(authorValidator.idParams), authorsController.getAuthorById);
+router.patch('/:authorId',validation(authorValidator.updateAuthor), authorsController.updateAuthorById);
+router.delete('/:authorId', validation(authorValidator.idParams), authorsController.deleteAuthorById);
+router.get('/books/:authorId', validation(authorValidator.idParams), authorsController.getBooksByAuthor);
 
 router.get('/authors/popularAuthors', authorsController.getPopularListOfAuthors); //Not tested
 

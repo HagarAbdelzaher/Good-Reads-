@@ -11,13 +11,13 @@ const getAuthors = asyncFunction(async (req, res) => {
   let page = req.query.page || 1;
   let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
   const totalAuthors = await Author.countDocuments();
-  const totalPages = Math.ceil(totalBooks / pageSize);
+  const totalPages = Math.ceil(totalAuthors / pageSize);
   if (page > totalPages) {
     // page = 1;
     throw { status: 404, message: 'There are no books on this page' };
   }
   const authors = await Author.find().skip(skip).limit(pageSize);
-  res.status(200).send({authors: authors , page: page , totalPages: totalPages , totalAuthors: totalAuthors});
+  res.status(200).send({ page: page, authors: authors, totalPages: totalPages , totalAuthors: totalAuthors});
   }else{
     const allAuthors = await Author.find();
     res.status(200).send(allAuthors);
