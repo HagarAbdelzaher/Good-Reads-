@@ -7,10 +7,10 @@ const { validation, bookValidator } = require('../../validation/validation')
 
 
 router.get('/', booksController.getAllBooks);
-router.get('/category/:categoryId', booksController.getBooksByCategory);
-router.get('/:id', booksController.getBookById);
+router.get('/category/:categoryId' , validation(bookValidator.categoryIdParams), booksController.getBooksByCategory);
+router.get('/:id' , validation(bookValidator.idParams), booksController.getBookById);
 router.get('/popular/books', booksController.getPopularListOfBooks);
-router.get('/search/:query', booksController.searchBooks);
+router.get('/search/:query', validation(bookValidator.query), booksController.searchBooks);
 
 
 module.exports = router;

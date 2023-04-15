@@ -127,9 +127,22 @@ const bookValidator = {
     },
     idParams: {
         params: Joi.object().required().keys({
-            id: Joi.string().length(24).required()
+            id: Joi.string().required().length(24)
         }),
     },
+    categoryIdParams: {
+        params: Joi.object().required().keys({
+        categoryId: Joi.string().required().length(24),
+        }),
+    },
+    query: {
+        params: Joi.object().required().keys({
+        query: Joi.string()
+        }),
+    },
+    
+    
+    
 }
 
 const userBookValidator = {
