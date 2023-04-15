@@ -8,6 +8,8 @@ const { createUrlPhoto } = require('../middlewares/fileParser');
 
 const { JWT_SECRET = 'test' } = process.env;
 
+
+
 const addUserToUserBooks = function addUserToUserBooks(userId) {
   const userbook = new UserBook({
     userId,
@@ -22,8 +24,11 @@ const createUser = asyncFunction(async (req, res) => {
   if (user) {
     throw { status: 400, message: 'User already registered' };
   }
-  if(!req.file) throw{status: 400, message: "no image uploaded"};
-  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
+  if(!req.file) throw{status: 400, message: "No Image Uploaded"};
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
+  if(!photo){
+    throw{status: 400, message: "No Image Uploaded"};
+  }
   user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -89,7 +94,10 @@ const deleteUserById = asyncFunction(async (req, res) => {
 const updateUserById = asyncFunction(async (req, res) => {
   const { id } = req.params;
   if(!req.file) throw{status: 400, message: "no image uploaded"};
-  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
+  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
+  if(!photo){
+    throw{status: 400, message: "No Image Uploaded"};
+  }
   const {
     firstName, lastName, password, email,
   } = req.body;
@@ -107,7 +115,7 @@ const updateUserById = asyncFunction(async (req, res) => {
     throw { status: 406, message: 'Request not acceptable' };
   }
   updateUser.save();
-  res.status(200).send(`Update User: ${updateUser}`);
+  res.status(200).send(`Update User: ${updateUser.firstName}`);
 });
 
 module.exports = {
