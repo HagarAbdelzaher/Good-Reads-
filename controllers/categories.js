@@ -26,11 +26,16 @@ const getCategoryById = asyncFunction(async (req, res) => {
 });
 
 const deleteCategory = asyncFunction(async (req, res) => {
-  const category = await Category.findByIdAndRemove(req.params.id);
+  const category = await Category.findById(req.params.id);
+  if(category.numberOfBooks!==0)
+  {
+    throw { status:409 , message:"You cannot delete a category that contain books"};
+  }
   if (!category) {
     throw { status: 404, message: 'Category not found!' };
   }
-  res.status(200).send(category);
+  const category2 = await Category.findByIdAndRemove(req.params.id);
+  res.status(200).send(category2);
 });
 
 const updateCategory = asyncFunction(async (req, res) => {
