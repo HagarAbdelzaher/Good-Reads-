@@ -24,7 +24,6 @@ const createUser = asyncFunction(async (req, res) => {
   }
   if(!req.file) throw{status: 400, message: "no image uploaded"};
   const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
-  
   user = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
