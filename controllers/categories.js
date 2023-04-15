@@ -15,7 +15,7 @@ const addNewCategory = asyncFunction(async (req, res) => {
 });
 
 const getAllCategories = asyncFunction(async (req, res) => {
-  if(req.query.limit === false){
+  if(req.query.limit === true){
   const pageSize = 10;
   let page = req.query.page || 1;
   let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
