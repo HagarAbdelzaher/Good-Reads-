@@ -13,7 +13,7 @@ const router = express.Router();
 router.use('/auth', authRouter);
 router.use(adminAuthentication);
 router.use('/category', categories);
-router.use('/author', authors); // 2 functions not tested
+router.use('/author', authors);
 router.use('/book', books);
 router.use('/user', user);
 
