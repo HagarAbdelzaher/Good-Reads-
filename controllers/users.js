@@ -92,25 +92,17 @@ const deleteUserById = asyncFunction(async (req, res) => {
 /// ///////////////////////////////// update user ///////////////////////////////////////
 
 const updateUserById = asyncFunction(async (req, res) => {
-  const { id } = req.params;
-  if(!req.file) throw{status: 400, message: "no image uploaded"};
-  const photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
-  if(!photo){
-    throw{status: 400, message: "No Image Uploaded"};
-  }
-  const {
-    firstName, lastName, password, email,
-  } = req.body;
-  const user = await User.findById(id).exec();
-  if (!user) {
-    throw { status: 404, message: 'User not found' };
-  }
-
-  const updateUser = await User.findByIdAndUpdate({ _id: id }, {
-    $set: {
-      firstName, lastName, password, email, photo,
-    },
-  }, { new: true });
+  // const user = await User.findById(req.currentUserId).exec();
+  // if (!user) {
+  //   throw { status: 404, message: 'User not found' };
+  // }
+  if(req.file) {
+    req.body.photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
+  };
+  // const {
+  //   firstName, lastName, password, email,
+  // } = req.body;
+  const updateUser = await User.findByIdAndUpdate({ _id: req.currentUserId }, req.body, { new: true });
   if (!updateUser) {
     throw { status: 406, message: 'Request not acceptable' };
   }
