@@ -17,12 +17,15 @@ const addNewBook = asyncFunction(async (req, res) => {
     cover: photo,
     description: req.body.description,
   });
-  // eslint-disable-next-line max-len
   const category = await Category.findByIdAndUpdate(req.body.categoryId, { $inc: { numberOfBooks: 1 } }, { returnOriginal: false });
-  category.save();
-  book.save().then(() => {
-    res.status(200).send(book);
-  });
+  await category.save();
+  await book.save();
+  await book.populate([
+    { path: 'authorId', select: ' _id firstName lastName' },
+    { path: 'categoryId', select: '_id name' }
+  ]); 
+  console.log(book);
+  res.status(200).send(book);
 });
 
 /// //////////////////////////////////////// get search Books //////////////////////////////////
