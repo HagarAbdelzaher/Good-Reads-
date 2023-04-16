@@ -122,7 +122,7 @@ const updateBook = asyncFunction(async (req, res) => {
   }res.status(200).send(book);
 });
 
-//////////////////////////////////////////// get Popular Books //////////////////////////////////
+/////////////////////////////////////////// get Popular Books //////////////////////////////////
 
 const getPopularListOfBooks = asyncFunction(async (req, res) => {
   const books = await Book.find().populate([
@@ -145,3 +145,10 @@ module.exports = {
   getPopularListOfBooks,
   searchBooks,
 };
+
+
+// const getBook = await Book.findById(req.params.id);
+// if (!getBook) {
+//   throw { status: 404, message: 'Book not found!' };
+// }
+// deleteUrlPhoto(getBook.cover.split("/").pop().split('.')[0]);

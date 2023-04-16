@@ -2,7 +2,7 @@
 const { Author } = require('../models/authors');
 const { Book } = require('../models/books');
 const asyncFunction = require('../middlewares/async');
-const { createUrlPhoto } = require('../middlewares/fileParser');
+const { createUrlPhoto, deleteUrlPhoto } = require('../middlewares/fileParser');
 
 
 ///////////////////////////////////// get authors ////////////////////////////////////////
@@ -67,6 +67,7 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
   {
     throw{status:409 , message :"You cannot delete an author without deleting his books first!"}
   }
+  deleteUrlPhoto(author.photo.split("/").pop().split('.')[0]);
   const author2 = await Author.findByIdAndDelete({ _id: req.params.authorId });
   res.status(200).send(author2);
  
@@ -75,15 +76,20 @@ const deleteAuthorById = asyncFunction(async (req, res) => {
 //////////////////////////////////// update author ///////////////////////////////////////
 
 const updateAuthorById = asyncFunction(async (req, res) => {
+  const getAuthor = await Author.findById({ _id: req.params.authorId });
+  if(!getAuthor){
+    throw { status: 404, message: 'Author not found!' };
+  }
   if(req.file){
-   req.body.photo= await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
+    req.body.photo= await createUrlPhoto(`${req.file.destination}/${req.file.filename}`)
   } 
   if(req.body.dob){
     req.body.dob = Date.parse(req.body.dob)
   }
+  deleteUrlPhoto(getAuthor.photo.split("/").pop().split('.')[0]);
   const author = await Author.findByIdAndUpdate({ _id: req.params.authorId },req.body, { returnOriginal: false});
   if (!author) {
-    throw { status: 404, message: 'Author not found!' };
+    throw { status: 404, message: "can't delete this author!" };
   }
   res.status(200).send(author);
 });

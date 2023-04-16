@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const { User } = require('../models/users');
 const asyncFunction = require('../middlewares/async');
 const { UserBook } = require('../models/usersBooks');
-const { createUrlPhoto } = require('../middlewares/fileParser');
+const { createUrlPhoto, deleteUrlPhoto } = require('../middlewares/fileParser');
 
 const { JWT_SECRET = 'test' } = process.env;
 
@@ -82,9 +82,14 @@ const getUsers = asyncFunction(async (req, res) => {
 
 const deleteUserById = asyncFunction(async (req, res) => {
   const { id } = req.params;
+  const user = await User.findById(id);
+  if(!user){
+    throw { status: 404, message: 'User not found' };
+  }
+  deleteUrlPhoto(user.photo.split("/").pop().split('.')[0]);
   const deleteUser = await User.findOneAndDelete({ _id: id });
   if (!deleteUser || deleteUser === undefined) {
-    throw { status: 401, message: 'User not found' };
+    throw { status: 401, message: "can't delete this user" };
   }
   res.status(200).send(`Deleted User: ${deleteUser.filename}`);
 });
@@ -92,9 +97,11 @@ const deleteUserById = asyncFunction(async (req, res) => {
 ///////////////////////////////////// update user ///////////////////////////////////////
 
 const updateUserById = asyncFunction(async (req, res) => {
+  const user = await User.findById(req.currentUserId);
   if(req.file) {
     req.body.photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
   };
+  // deleteUrlPhoto(user.photo.split("/").pop().split('.')[0]);
   const updateUser = await User.findByIdAndUpdate({ _id: req.currentUserId }, req.body, { new: true });
   if (!updateUser) {
     throw { status: 406, message: 'Request not acceptable' };
