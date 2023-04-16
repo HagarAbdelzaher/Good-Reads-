@@ -5,7 +5,6 @@ const authorsController = require('./authors');
 const adminController = require('./admin')
 
 module.exports = {
-
   adminController,
   booksController,
   usersController,

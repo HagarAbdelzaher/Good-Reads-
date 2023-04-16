@@ -3,7 +3,7 @@ const mongoClient = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
 require('./boot/seedAdmin');
-require('dotenv').config(); // to use file .env
+require('dotenv').config();
 
 const app = express();
 
@@ -16,7 +16,6 @@ app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-// connect on mongoose
 mongoClient.connect(MONGO_URL)
   .then(() => {
     console.log('Connected to database');

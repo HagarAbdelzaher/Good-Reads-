@@ -9,6 +9,4 @@ const router = express.Router();
 router.post('/login', validation(adminValidator.loginAdmin), adminController.loginAdmin);
 
 
-
-
 module.exports = router;

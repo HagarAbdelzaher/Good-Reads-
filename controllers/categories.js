@@ -18,7 +18,7 @@ const getAllCategories = asyncFunction(async (req, res) => {
   if(!req.query.skipPagination){
   const pageSize = 10;
   let page = req.query.page || 1;
-  let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
+  let skip = (page - 1) * pageSize;
   const totalBooks = await Category.countDocuments();
   const totalPages = Math.ceil(totalBooks / pageSize);
   if (page > totalPages) {

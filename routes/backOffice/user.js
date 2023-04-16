@@ -2,8 +2,8 @@ const express = require('express');
 const { usersController } = require('../../controllers/index');
 const { validation, usersValidator } = require('../../validation/validation');
 
-const router = express.Router();
 
+const router = express.Router();
 
 
 router.get('/getUser', usersController.getUserById);

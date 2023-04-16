@@ -17,7 +17,7 @@ const addUserToUserBooks = function addUserToUserBooks(userId) {
   userbook.save();
 };
 
-/// ////////////////////////////// create user (register) /////////////////////////////////
+////////////////////////////////// create user (register) /////////////////////////////////
 
 const createUser = asyncFunction(async (req, res) => {
   let user = await User.findOne({ email: req.body.email }).exec();
@@ -42,7 +42,7 @@ const createUser = asyncFunction(async (req, res) => {
   });
 });
 
-/// /////////////////////////////// login user ///////////////////////////////////////////
+/////////////////////////////////// login user ///////////////////////////////////////////
 
 const loginUser = asyncFunction(async (req, res) => {
   // check is user login with email already exist or not
@@ -61,7 +61,7 @@ const loginUser = asyncFunction(async (req, res) => {
   res.status(200).send({ Token: token });
 });
 
-/// ////////////////////////////// get user by id ///////////////////////////////////////////
+////////////////////////////////// get user by id ///////////////////////////////////////////
 
 const getUserById = asyncFunction(async (req, res) => {
   const oneUser = await User.findById(req.currentUserId);
@@ -71,14 +71,14 @@ const getUserById = asyncFunction(async (req, res) => {
   res.status(200).send(oneUser);
 });
 
-/// //////////////////////////////// get all user ///////////////////////////////////////////
+//////////////////////////////////// get all user ///////////////////////////////////////////
 
 const getUsers = asyncFunction(async (req, res) => {
   const users = await User.find();
   res.status(200).send(users);
 });
 
-/// /////////////////////////////////// delete user /////////////////////////////////////////
+/////////////////////////////////////// delete user /////////////////////////////////////////
 
 const deleteUserById = asyncFunction(async (req, res) => {
   const { id } = req.params;
@@ -89,7 +89,7 @@ const deleteUserById = asyncFunction(async (req, res) => {
   res.status(200).send(`Deleted User: ${deleteUser.filename}`);
 });
 
-/// ///////////////////////////////// update user ///////////////////////////////////////
+///////////////////////////////////// update user ///////////////////////////////////////
 
 const updateUserById = asyncFunction(async (req, res) => {
   if(req.file) {

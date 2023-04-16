@@ -5,7 +5,7 @@ const { Category } = require('../models/categories');
 const { createUrlPhoto } = require('../middlewares/fileParser');
 
 
-/// //////////////////////////////////////// add Books //////////////////////////////////
+//////////////////////////////////////////// add Books //////////////////////////////////
 
 const addNewBook = asyncFunction(async (req, res) => {
   if(!req.file) throw{status: 400, message: "no image uploaded"};
@@ -28,14 +28,14 @@ const addNewBook = asyncFunction(async (req, res) => {
   res.status(200).send(book);
 });
 
-/// //////////////////////////////////////// get search Books //////////////////////////////////
+//////////////////////////////////////////// get search Books //////////////////////////////////
 
 const searchBooks = asyncFunction(async (req,res)=>{
   const books = await Book.find({name: { $regex: new RegExp(req.params.query , 'i') } });
   res.status(200).send(books);
 });
 
-/// //////////////////////////////////////// get all Books //////////////////////////////////
+//////////////////////////////////////////// get all Books //////////////////////////////////
 
 const getAllBooks = asyncFunction(async (req, res) => {
   if(!req.query.skipPagination){
@@ -61,7 +61,7 @@ const getAllBooks = asyncFunction(async (req, res) => {
   }
 });
 
-/// //////////////////////////////////////// get Book by id //////////////////////////////////
+//////////////////////////////////////////// get Book by id //////////////////////////////////
 
 const getBookById = asyncFunction(async (req, res) => {
   const book = await Book.findById(req.params.id).populate([
@@ -74,7 +74,7 @@ const getBookById = asyncFunction(async (req, res) => {
   res.status(200).send(book);
 });
 
-/// //////////////////////////////////////// get Book by category //////////////////////////////////
+//////////////////////////////////////////// get Book by category //////////////////////////////////
 
 const getBooksByCategory = asyncFunction(async (req, res) => {
   const category = await Category.findById(req.params.categoryId);
@@ -87,7 +87,6 @@ const getBooksByCategory = asyncFunction(async (req, res) => {
   const totalPages = Math.ceil(totalBooks / pageSize);
   if (page > totalPages) {
     page = 1;
-    // throw { status: 404, message: 'There are no books on this page' };
   }
   const skip = (page - 1) * pageSize;
   const books = await Book.find({ categoryId: req.params.categoryId }).skip(skip).limit(pageSize);
@@ -97,7 +96,7 @@ const getBooksByCategory = asyncFunction(async (req, res) => {
   res.status(200).send({ page, data: books, totalPages , totalBooks});
 });
 
-/// //////////////////////////////////////// delete Books //////////////////////////////////
+//////////////////////////////////////////// delete Books //////////////////////////////////
 
 const deleteBook = asyncFunction(async (req, res) => {
   const book = await Book.findByIdAndRemove(req.params.id);
@@ -110,7 +109,7 @@ const deleteBook = asyncFunction(async (req, res) => {
   res.status(200).send(book);
 });
 
-/// //////////////////////////////////////// update Book //////////////////////////////////
+//////////////////////////////////////////// update Book //////////////////////////////////
 
 const updateBook = asyncFunction(async (req, res) => {
   // eslint-disable-next-line max-len
@@ -123,7 +122,7 @@ const updateBook = asyncFunction(async (req, res) => {
   }res.status(200).send(book);
 });
 
-/// //////////////////////////////////////// get Popular Books //////////////////////////////////
+//////////////////////////////////////////// get Popular Books //////////////////////////////////
 
 const getPopularListOfBooks = asyncFunction(async (req, res) => {
   const books = await Book.find().populate([

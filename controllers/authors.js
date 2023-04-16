@@ -11,11 +11,10 @@ const getAuthors = asyncFunction(async (req, res) => {
   if(!req.query.skipPagination){
   const pageSize = 10;
   let page = req.query.page || 1;
-  let skip = (page - 1) * pageSize; // currentPage = 4 ---> (4 - 1) * 8 then will count from number 25
+  let skip = (page - 1) * pageSize;
   const totalAuthors = await Author.countDocuments();
   const totalPages = Math.ceil(totalAuthors / pageSize);
   if (page > totalPages) {
-    // page = 1;
     throw { status: 404, message: 'There are no books on this page' };
   }
   const authors = await Author.find().skip(skip).sort({ createdAt: -1 }).limit(pageSize);
@@ -92,7 +91,6 @@ const updateAuthorById = asyncFunction(async (req, res) => {
 ////////////////////////////////// get popular list ///////////////////////////////////////////
 
 const getPopularListOfAuthors = asyncFunction(async (req, res) => {
-  // sort books based on popularity 
   const highRatingsOfBooks = await Book.find().populate({
     path: 'authorId',
   }).sort({ popularity: -1 });
@@ -103,16 +101,12 @@ const getPopularListOfAuthors = asyncFunction(async (req, res) => {
 
   const popularAuthorSet = new Set();
   for (let i = 0; i < highRatingsOfBooks.length && popularAuthorSet.size < 3; i++) {
-    // Add the author's name to the set
     popularAuthorSet.add(highRatingsOfBooks[i].authorId);
   }
-
-  const popularAuthor = [...popularAuthorSet]; // Convert the set to an array
-
+  const popularAuthor = [...popularAuthorSet];
   if (popularAuthor.length === 0) {
     throw { status: 404, message: 'No authors exist' };
   }
-
   res.status(200).send(popularAuthor);
 });
 
@@ -125,12 +119,10 @@ const getBooksByAuthor = asyncFunction(async (req, res) => {
   }
   const pageSize = 8;
   let page = req.query.page || 1;
-  // let skip = (page - 1) * pageSize;
   const totalBooks = await Book.find({ authorId: req.params.authorId }).countDocuments();
   const totalPages = Math.ceil(totalBooks / pageSize);
   if (page > totalPages) {
     page = 1;
-    // throw { status: 404, message: 'There are no books on this page' };
   }
   const skip = (page - 1) * pageSize;
   const books = await Book.find({ authorId: req.params.authorId }).skip(skip).limit(pageSize);

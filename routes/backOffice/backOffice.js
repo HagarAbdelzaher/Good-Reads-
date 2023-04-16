@@ -11,6 +11,7 @@ const router = express.Router();
 
 
 router.use('/auth', authRouter);
+
 router.use(adminAuthentication);
 router.use('/category', categories);
 router.use('/author', authors);
