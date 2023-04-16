@@ -6,7 +6,7 @@ const { validation, adminValidator } = require('../../validation/validation')
 const router = express.Router();
 
 
-router.post('/login', validation(adminController.loginAdmin), adminController.loginAdmin);
+router.post('/login', validation(adminValidator.loginAdmin), adminController.loginAdmin);
 
 
 

@@ -114,7 +114,6 @@ const bookValidator = {
             categoryId: Joi.string().required().length(24),
             authorId: Joi.string().required().length(24),
             description: Joi.string(),
-            
         })
     },
     updateBook: {
@@ -123,6 +122,9 @@ const bookValidator = {
             categoryId: Joi.string().length(24),
             authorId: Joi.string().length(24),
             description: Joi.string(),
+        }),
+        params: Joi.object().required().keys({
+            id: Joi.string().length(24).required(),
         })
     },
     idParams: {
@@ -132,12 +134,12 @@ const bookValidator = {
     },
     categoryIdParams: {
         params: Joi.object().required().keys({
-        categoryId: Joi.string().required().length(24),
+            categoryId: Joi.string().required().length(24),
         }),
     },
     query: {
         params: Joi.object().required().keys({
-        query: Joi.string()
+            query: Joi.string()
         }),
     },
     
@@ -177,7 +179,7 @@ const userBookValidator = {
     },
     shelfParams:{
         params: Joi.object().required().keys({
-        shelf:  Joi.string().required().valid('Want to read', 'Read', 'Reading' , 'all'),
+            shelf:  Joi.string().required().valid('Want to read', 'Read', 'Reading' , 'all'),
         }),
 
         

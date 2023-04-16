@@ -1,9 +1,9 @@
 const express = require('express');
-
-const router = express.Router();
-
 const booksController = require('../../controllers/books');
 const { validation, bookValidator } = require('../../validation/validation')
+
+
+const router = express.Router();
 
 
 router.get('/', booksController.getAllBooks);

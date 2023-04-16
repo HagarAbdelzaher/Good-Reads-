@@ -92,16 +92,9 @@ const deleteUserById = asyncFunction(async (req, res) => {
 /// ///////////////////////////////// update user ///////////////////////////////////////
 
 const updateUserById = asyncFunction(async (req, res) => {
-  // const user = await User.findById(req.currentUserId).exec();
-  // if (!user) {
-  //   throw { status: 404, message: 'User not found' };
-  // }
   if(req.file) {
     req.body.photo = await createUrlPhoto(`${req.file.destination}/${req.file.filename}`);
   };
-  // const {
-  //   firstName, lastName, password, email,
-  // } = req.body;
   const updateUser = await User.findByIdAndUpdate({ _id: req.currentUserId }, req.body, { new: true });
   if (!updateUser) {
     throw { status: 406, message: 'Request not acceptable' };
